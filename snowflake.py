@@ -66,6 +66,12 @@ class Snowflake:
         )
 
         return rotatedSurface, newPos
+    
+    def undo(self):
+        self.triangle.undo()
+
+    def redo(self):
+        self.triangle.redo()
 
     def update(self,
                screen : pygame.Surface):

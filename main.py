@@ -9,6 +9,7 @@ from pygame import Vector2
 import globals as gb
 from snowflake import Snowflake
 from saveFile import File
+from drawnSurface import DrawnSurface
 
 screen = pygame.display.set_mode((gb.SX, gb.SY), pygame.NOFRAME)
 
@@ -17,27 +18,40 @@ clock = pygame.time.Clock()
 
 snowflake : Snowflake = None
 saveFile = None
+cooldown = 0
 
-def restart():
+def startGame():
     global snowflake
     snowflake = Snowflake(12, 500)
 
-restart()
+startGame()
 while not doExit:
     dt = clock.tick(gb.FPS)/1000
+    cooldown -= dt
     screen.fill(gb.BG)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             doExit = True
 
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_r]:
-        restart()
-    if keys[pygame.K_LCTRL] and keys[pygame.K_s]:
-        saveFile = File()
-        saveFile.saveFile()
-        
-        pygame.image.save(snowflake.drawingSurface, saveFile.filePath)
+    if cooldown <= 0:
+        if keys[pygame.K_r]:
+            startGame()
+            cooldown = .1
+        if keys[pygame.K_LCTRL]:
+            if keys[pygame.K_s]:
+                saveFile = File()
+                saveFile.saveFile()
+                
+                pygame.image.save(snowflake.drawingSurface, saveFile.filePath)
+            if keys[pygame.K_z]:
+                cooldown = .15
+                snowflake.undo()
+            
+            if keys[pygame.K_LSHIFT]:
+                if keys[pygame.K_z]:
+                    cooldown = .15
+                    snowflake.redo()
 
     snowflake.update(screen)
 

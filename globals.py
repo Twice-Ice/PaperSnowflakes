@@ -1,8 +1,8 @@
 SX = int(2256)
-SY = int(1504)
+SY = int(1504 - 250)
 FPS = 60
 
-BG = (0, 0, 0)#(50, 50, 50)
+BG = (50, 50, 50)
 
 def halfRound(val: float, n_digits: int = 0):
     val *= 10 ** n_digits

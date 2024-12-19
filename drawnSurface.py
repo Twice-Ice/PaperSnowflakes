@@ -16,26 +16,51 @@ class DrawnSurface:
 
         self.paintColor = (0, 0, 0, 255)
 
+        self.mousePressed = False
+        self.undoStack : list[pygame.Surface] = []
+        self.currentUndo : pygame.Surface = self.surf.copy()
+        self.redoQueue : list[pygame.Surface] = []
+
     def paint(self):
         oldMouse = self.mouse
         self.mouse = Vector2(pygame.mouse.get_pos())
-        pressed = pygame.mouse.get_pressed(3)[0]
         
-        if pressed:
+        if self.mousePressed and not pygame.mouse.get_pressed(3)[0]:
+            self.undoStack.append(self.currentUndo)
+            self.currentUndo = self.surf.copy()
+            if len(self.undoStack) > 20:
+                self.undoStack.pop(0)
+            self.redoQueue.clear()
+        
+        self.mousePressed = pygame.mouse.get_pressed(3)[0]
+
+        if self.mousePressed:
+            self.mousePressed = True
             pygame.draw.line(self.surf, self.paintColor, oldMouse - self.pos, self.mouse - self.pos, 10)
             pygame.draw.circle(self.surf, self.paintColor, oldMouse - self.pos, 4)
             pygame.draw.circle(self.surf, self.paintColor, self.mouse - self.pos, 4)
 
+    def undo(self):
+        if len(self.undoStack) > 0:
+            self.currentUndo = self.surf.copy()
+            self.redoQueue.append(self.surf.copy())
+            self.surf = self.undoStack.pop()
+
+    def redo(self):
+        if len(self.redoQueue) > 0:
+            self.undoStack.append(self.surf.copy())
+            self.surf = self.redoQueue.pop(0)
+
     def draw(self,
              screen : pygame.Surface,
-             mask : pygame.Mask):
-        # self.surf.fill((255, 255, 255, 255))
-        mask = mask.to_surface(setcolor=(0, 255, 0, 255), unsetcolor=(255, 0, 0, 0))
-        self.surf.blit(mask, (0,0), special_flags=pygame.BLEND_RGBA_MULT)        
+             mask : pygame.Mask = None):
+        if mask:
+            mask = mask.to_surface(setcolor=(0, 255, 0, 255), unsetcolor=(255, 0, 0, 0))
+            self.surf.blit(mask, (0,0), special_flags=pygame.BLEND_RGBA_MULT)    
         screen.blit(self.surf, self.pos)
 
     def update(self,
                screen : pygame.Surface,
-               mask : pygame.Mask):
+               mask : pygame.Mask = None):
         self.paint()
         self.draw(screen, mask)

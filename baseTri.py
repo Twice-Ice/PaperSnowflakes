@@ -35,6 +35,12 @@ class Tri:
         pygame.draw.line(self.surf, color, self.points[0], self.points[1], self.diameter)
         pygame.draw.line(self.surf, color, self.points[0], self.points[2], self.diameter)
         pygame.draw.circle(self.surf, color, self.points[0] + Vector2(self.diameter//2, -2), self.diameter//2)
+    
+    def undo(self):
+        self.paper.undo()
+
+    def redo(self):
+        self.paper.redo()
         
     def draw(self,
              screen : pygame.Surface):
