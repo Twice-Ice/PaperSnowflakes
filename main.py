@@ -8,12 +8,15 @@ import pygame
 from pygame import Vector2
 import globals as gb
 from snowflake import Snowflake
+from saveFile import File
 
 screen = pygame.display.set_mode((gb.SX, gb.SY), pygame.NOFRAME)
 
 doExit = False
 clock = pygame.time.Clock()
-snowflake = None
+
+snowflake : Snowflake = None
+saveFile = None
 
 def restart():
     global snowflake
@@ -30,6 +33,11 @@ while not doExit:
     keys = pygame.key.get_pressed()
     if keys[pygame.K_r]:
         restart()
+    if keys[pygame.K_LCTRL] and keys[pygame.K_s]:
+        saveFile = File()
+        saveFile.saveFile()
+        
+        pygame.image.save(snowflake.drawingSurface, saveFile.filePath)
 
     snowflake.update(screen)
 
