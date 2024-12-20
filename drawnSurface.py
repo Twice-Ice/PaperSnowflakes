@@ -19,7 +19,7 @@ class DrawnSurface:
         self.mousePressed = False
         self.undoStack : list[pygame.Surface] = []
         self.currentUndo : pygame.Surface = self.surf.copy()
-        self.redoQueue : list[pygame.Surface] = []
+        self.redoStack : list[pygame.Surface] = []
 
     def paint(self):
         oldMouse = self.mouse
@@ -30,7 +30,7 @@ class DrawnSurface:
             self.currentUndo = self.surf.copy()
             if len(self.undoStack) > 20:
                 self.undoStack.pop(0)
-            self.redoQueue.clear()
+            self.redoStack.clear()
         
         self.mousePressed = pygame.mouse.get_pressed(3)[0]
 
@@ -42,14 +42,17 @@ class DrawnSurface:
 
     def undo(self):
         if len(self.undoStack) > 0:
-            self.currentUndo = self.surf.copy()
-            self.redoQueue.append(self.surf.copy())
+            self.redoStack.append(self.surf.copy())
             self.surf = self.undoStack.pop()
+            self.currentUndo = self.surf.copy()
+            print("undid")
 
     def redo(self):
-        if len(self.redoQueue) > 0:
+        if len(self.redoStack) > 0:
             self.undoStack.append(self.surf.copy())
-            self.surf = self.redoQueue.pop(0)
+            self.surf = self.redoStack.pop()
+            self.currentUndo = self.surf.copy()
+            print("redid")
 
     def draw(self,
              screen : pygame.Surface,

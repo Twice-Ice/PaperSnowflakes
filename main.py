@@ -39,19 +39,25 @@ while not doExit:
             startGame()
             cooldown = .1
         if keys[pygame.K_LCTRL]:
-            if keys[pygame.K_s]:
-                saveFile = File()
-                saveFile.saveFile()
-                
-                pygame.image.save(snowflake.drawingSurface, saveFile.filePath)
-            if keys[pygame.K_z]:
-                cooldown = .15
-                snowflake.undo()
-            
             if keys[pygame.K_LSHIFT]:
+                if keys[pygame.K_s]:
+                    if saveFile == None:
+                        saveFile = File()
+                        saveFile.saveFile()
+                    pygame.image.save(snowflake.drawingSurface, saveFile.filePath)
+
                 if keys[pygame.K_z]:
                     cooldown = .15
                     snowflake.redo()
+            else:
+                if keys[pygame.K_s]:
+                    saveFile = File()
+                    saveFile.saveFile()
+                    pygame.image.save(snowflake.drawingSurface, saveFile.filePath)
+                    
+                if keys[pygame.K_z]:
+                    cooldown = .15
+                    snowflake.undo()
 
     snowflake.update(screen)
 
