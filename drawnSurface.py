@@ -45,14 +45,12 @@ class DrawnSurface:
             self.redoStack.append(self.surf.copy())
             self.surf = self.undoStack.pop()
             self.currentUndo = self.surf.copy()
-            print("undid")
 
     def redo(self):
         if len(self.redoStack) > 0:
             self.undoStack.append(self.surf.copy())
             self.surf = self.redoStack.pop()
             self.currentUndo = self.surf.copy()
-            print("redid")
 
     def draw(self,
              screen : pygame.Surface,

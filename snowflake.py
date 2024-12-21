@@ -9,13 +9,16 @@ class Snowflake:
                  numOfTris : int = 12,
                  radius : int = 250,
                  snowflakePos : tuple|Vector2 = (500, 500),
-                 trianglePos : tuple|Vector2 = (1000, 500)):
-        self.triangle = Tri(numOfTris, radius, trianglePos)
+                 trianglePos : tuple|Vector2 = (1000, 500),
+                 circle : bool = True):
+        self.triangle = Tri(numOfTris, radius, trianglePos, circle)
         self.numOfTris = numOfTris
         self.offset = Vector2(snowflakePos)
         size = self.triangle.radius*2
         self.drawingSurface = pygame.Surface((size, size), pygame.SRCALPHA)
         self.drawingSurface.fill((255, 255, 255, 0))
+        if circle:
+            pygame.draw.circle(self.drawingSurface, (255, 255, 255, 255//2), (size//2, size//2), size//2)
 
     def draw(self,
              screen : pygame.Surface):

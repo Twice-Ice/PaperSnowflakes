@@ -5,7 +5,6 @@ if os.name == "nt":  # Check if on Windows
     ctypes.windll.shcore.SetProcessDpiAwareness(2) 
 
 import pygame
-from pygame import Vector2
 import globals as gb
 from snowflake import Snowflake
 from saveFile import File
@@ -22,7 +21,7 @@ cooldown = 0
 
 def startGame():
     global snowflake
-    snowflake = Snowflake(12, 500)
+    snowflake = Snowflake(12, 500, snowflakePos=(750, gb.SY//2), trianglePos=(1250, gb.SY//2), circle=True)
 
 startGame()
 while not doExit:
@@ -54,7 +53,7 @@ while not doExit:
                     saveFile = File()
                     saveFile.saveFile()
                     pygame.image.save(snowflake.drawingSurface, saveFile.filePath)
-                    
+
                 if keys[pygame.K_z]:
                     cooldown = .15
                     snowflake.undo()
